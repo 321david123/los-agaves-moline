@@ -173,29 +173,51 @@
     });
   })();
 
-  /* ---------- Highlight current day in hours ---------- */
+  /* ---------- Highlight today's row ONLY when actually open now ---------- */
   (function () {
     var rows = document.querySelectorAll("#hours tbody tr");
     if (!rows.length) return;
-    var day = new Date().getDay(); // 0=Sun..6=Sat
-    var idx = day === 0 ? 6 : day - 1; // table is Mon..Sun
-    if (rows[idx]) rows[idx].classList.add("is-now");
+    // open/close in minutes from midnight; close > 1440 = runs past midnight into next day
+    var HRS = {
+      0: { o: 660, c: 1260 },  // Sun 11:00 AM – 9:00 PM
+      1: { o: 660, c: 1320 },  // Mon 11:00 AM – 10:00 PM
+      2: { o: 660, c: 1320 },  // Tue 11:00 AM – 10:00 PM
+      3: { o: 660, c: 1320 },  // Wed 11:00 AM – 10:00 PM
+      4: { o: 660, c: 1320 },  // Thu 11:00 AM – 10:00 PM
+      5: { o: 660, c: 1350 },  // Fri 11:00 AM – 10:30 PM
+      6: { o: 660, c: 1320 }   // Sat 11:00 AM – 10:00 PM
+    };
+    var d = new Date();
+    var day = d.getDay();                       // 0 Sun .. 6 Sat
+    var now = d.getHours() * 60 + d.getMinutes();
+    var open = false;
+    var t = HRS[day];
+    if (t && now >= t.o && now < Math.min(t.c, 1440)) open = true;   // today's shift, up to midnight
+    var yt = HRS[(day + 6) % 7];                                     // yesterday
+    if (yt && yt.c > 1440 && now < (yt.c - 1440)) open = true;       // still open from last night's late shift
+    if (!open) return;                                               // closed → no highlight, no "Open now"
+    var rowIndex = day === 0 ? 6 : day - 1;    // table order: Mon..Sun
+    if (rows[rowIndex]) rows[rowIndex].classList.add("is-now");
   })();
 
-  /* ---------- Swiper: gallery ---------- */
+  /* ---------- Swiper: gallery + reviews (guarded) ---------- */
   if (window.Swiper) {
-    new Swiper(".gallery__swiper", {
-      slidesPerView: "auto",
-      spaceBetween: 18,
-      grabCursor: true,
-      navigation: { prevEl: ".gallery__btn--prev", nextEl: ".gallery__btn--next" }
-    });
+    if (document.querySelector(".gallery__swiper")) {
+      new Swiper(".gallery__swiper", {
+        slidesPerView: "auto",
+        spaceBetween: 18,
+        grabCursor: true,
+        navigation: { prevEl: ".gallery__btn--prev", nextEl: ".gallery__btn--next" }
+      });
+    }
 
-    new Swiper(".reviews__swiper", {
-      slidesPerView: 1,
-      loop: true,
-      autoplay: prefersReduced ? false : { delay: 5200, disableOnInteraction: false },
-      pagination: { el: ".reviews__dots", clickable: true }
-    });
+    if (document.querySelector(".reviews__swiper")) {
+      new Swiper(".reviews__swiper", {
+        slidesPerView: 1,
+        loop: true,
+        autoplay: prefersReduced ? false : { delay: 5200, disableOnInteraction: false },
+        pagination: { el: ".reviews__dots", clickable: true }
+      });
+    }
   }
 })();

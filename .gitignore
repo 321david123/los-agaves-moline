@@ -6,3 +6,4 @@ _qa*.html
 _qiso.html
 *.log
 serve.js
+_i18n_translations.json

@@ -287,10 +287,11 @@
         <p class="kicker" data-reveal>From the Kitchen</p>
         <h2 class="section-head" data-reveal data-i18n="3">The <em>Menu</em></h2>
         <p class="menu__note" data-reveal>A big, classic Mexican menu — appetizers, fajitas, seafood, sizzling steaks and combos.
-          Every table starts with complimentary chips &amp; fresh salsa. Ask your server or call for current prices.</p>
+          Every table starts with complimentary chips &amp; fresh salsa. Lunch served daily 11 am to 3 pm. <a href="assets/los-agaves-menu.pdf" target="_blank" rel="noopener" style="font-weight:700;text-decoration:underline">Download the full menu (PDF) &darr;</a></p>
 
         <div class="menu__tabs" role="tablist" aria-label="Menu sections">
           <button class="menu__tab is-active" role="tab" aria-selected="true" data-tab="starters">Starters</button>
+          <button class="menu__tab" role="tab" aria-selected="false" data-tab="lunch">Lunch</button>
           <button class="menu__tab" role="tab" aria-selected="false" data-tab="fajitas">Fajitas</button>
           <button class="menu__tab" role="tab" aria-selected="false" data-tab="grill">Grill &amp; Steaks</button>
           <button class="menu__tab" role="tab" aria-selected="false" data-tab="seafood">Seafood</button>
@@ -322,6 +323,15 @@
           </div>
         </div>
         <p class="menu__legend"><em class="m-tag">vg</em> vegetarian option available · Chips &amp; fresh salsa complimentary with every meal</p>
+      </div>
+
+      <div class="menu__panel" data-panel="lunch">
+        <div class="menu__cols">
+          <div class="menu__group">
+            <h3 class="menu__group-title">Lunch &middot; served daily 11 am &ndash; 3 pm</h3>
+            <div class="m-item"><div class="m-item__head"><span class="m-item__name">Loading today&rsquo;s lunch menu&hellip;</span></div></div>
+          </div>
+        </div>
       </div>
 
       <!-- FAJITAS -->
@@ -754,5 +764,45 @@
   })();
 
   </script>
+<!-- Live menu from Supabase (owner-editable via the admin panel). Static menu is the fallback. -->
+<script>
+(function(){
+  var SB='https://scgcgfcfvbuppkraxjrp.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZ2NnZmNmdmJ1cHBrcmF4anJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNjk2MTQsImV4cCI6MjA5NTY0NTYxNH0.Yjz5X8xnqYmOQOMN-4VGBCw0uF3Sy0D-umC-b5nxp54';
+  var TABMAP={
+    'starters':['Appetizers','Salads & Soup'],
+    'lunch':['Lunch Favorites','Lunch Specials'],
+    'fajitas':['Las Fajitas'],
+    'grill':['Steaks · 14 oz T-Bone','From the Grill'],
+    'seafood':['Seafood'],
+    'classics':['House Specialties','Quesadillas','Combos & Vegetarian','A la Carte & Kids','Sides'],
+    'sweets':['Desserts','Drinks & Bar']
+  };
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function price(it){ if(it.precio_texto) return esc(it.precio_texto); if(it.precio==null||it.precio==='') return ''; var p=Number(it.precio); return '$'+p.toFixed(2); }
+  function itemHTML(it){ return '<div class="m-item"><div class="m-item__head"><span class="m-item__name">'+esc(it.nombre)+'</span><span class="m-leader"></span><span class="m-item__price">'+price(it)+'</span></div>'+(it.descr?'<p class="m-item__desc">'+esc(it.descr)+'</p>':'')+'</div>'; }
+  fetch(SB+'/rest/v1/lag_menu?select=*&activo=eq.true&order=orden',{headers:{apikey:KEY}})
+    .then(function(r){return r.ok?r.json():Promise.reject();})
+    .then(function(items){
+      if(!items||!items.length) return;
+      var groups={}; items.forEach(function(it){ (groups[it.categoria]=groups[it.categoria]||[]).push(it); });
+      Object.keys(TABMAP).forEach(function(panelKey){
+        var panel=document.querySelector('.menu__panel[data-panel="'+panelKey+'"]'); if(!panel) return;
+        var cols=panel.querySelector('.menu__cols'); if(!cols) return;
+        var html='';
+        TABMAP[panelKey].forEach(function(cat){
+          if(!groups[cat]) return;
+          var title=(cat==='Lunch Favorites')?'Lunch Favorites · daily 11 am – 3 pm':cat;
+          html+='<div class="menu__group"><h3 class="menu__group-title">'+esc(title)+'</h3>';
+          groups[cat].forEach(function(it){ html+=itemHTML(it); });
+          html+='</div>';
+        });
+        if(html) cols.innerHTML=html;
+      });
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
+
 </html>

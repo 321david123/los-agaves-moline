@@ -87,6 +87,14 @@
   }
   </script>
 <style>
+.hero__locs{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hero__locs a{display:inline-flex;align-items:center;gap:7px;background:rgba(10,9,8,.44);border:1.4px solid rgba(240,227,200,.5);backdrop-filter:blur(7px);color:#fff;text-decoration:none;border-radius:99px;padding:9px 16px;font-size:.86rem;font-weight:700;letter-spacing:.02em;transition:.18s}
+.hero__locs a:hover{border-color:#e0a83c;background:rgba(10,9,8,.62);transform:translateY(-1px)}
+.maps4{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.maps4 figure{margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(43,26,18,.16)}
+.maps4 iframe{width:100%;height:220px;border:0;display:block}
+.maps4 figcaption{position:absolute;left:8px;top:8px;z-index:2;background:rgba(20,14,8,.82);color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.04em;padding:4px 11px;border-radius:99px}
+@media(max-width:560px){.maps4{grid-template-columns:1fr}.maps4 iframe{height:190px}}
 .locs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 22px}
 .loc{border:1px solid rgba(43,26,18,.14);border-radius:12px;padding:14px 16px;background:rgba(255,255,255,.55)}
 .loc h3{margin:0 0 6px;font-size:.95rem}
@@ -166,6 +174,12 @@
         <div class="hero__cta" data-reveal>
           <a href="#menu" class="btn btn--sun btn--lg">View the Menu</a>
           <a href="tel:+13097577134" class="btn btn--ghost-light btn--lg">Call to Order</a>
+        </div>
+        <div class="hero__locs" data-reveal>
+          <a href="#visit"><b>📍</b> Moline &middot; 16th St</a>
+          <a href="#visit"><b>📍</b> Moline &middot; Ave of the Cities</a>
+          <a href="#visit"><b>📍</b> Davenport &middot; Utica Ridge</a>
+          <a href="#visit"><b>📍</b> Iowa City &middot; N Dodge St</a>
         </div>
       </div>
 
@@ -627,13 +641,23 @@
           </div>
         </div>
 
-        <div class="visit__map" data-reveal>
-          <iframe
-            title="Map to Los Agaves Mexican Grill, 3939 16th St, Moline, IL"
-            src="https://www.google.com/maps?q=Los+Agaves+Mexican+Grill+3939+16th+St+Moline+IL+61265&output=embed"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            allowfullscreen></iframe>
+        <div class="visit__map maps4" data-reveal>
+          <figure>
+            <figcaption>Moline &middot; 16th St</figcaption>
+            <iframe title="Map — Los Agaves, 3939 16th St, Moline, IL" src="https://www.google.com/maps?q=Los+Agaves+Mexican+Grill+3939+16th+St+Moline+IL+61265&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </figure>
+          <figure>
+            <figcaption>Moline &middot; Ave of the Cities</figcaption>
+            <iframe title="Map — Los Agaves, 5304 Avenue of the Cities, Moline, IL" src="https://www.google.com/maps?q=Los+Agaves+Mexican+Grill+5304+Avenue+of+the+Cities+Moline+IL&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </figure>
+          <figure>
+            <figcaption>Davenport &middot; Utica Ridge</figcaption>
+            <iframe title="Map — Los Agaves, 4882 Utica Ridge Rd, Davenport, IA" src="https://www.google.com/maps?q=Los+Agaves+Mexican+Grill+4882+Utica+Ridge+Rd+Davenport+IA+52807&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </figure>
+          <figure>
+            <figcaption>Iowa City &middot; N Dodge St</figcaption>
+            <iframe title="Map — Los Agaves, 2208 N Dodge St, Iowa City, IA" src="https://www.google.com/maps?q=Los+Agaves+Mexican+Grill+2208+N+Dodge+St+Iowa+City+IA+52245&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </figure>
         </div>
       </div>
     </section>

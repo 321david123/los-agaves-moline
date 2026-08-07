@@ -829,6 +829,25 @@
     .catch(function(){});
 })();
 </script>
+<!-- Live gallery from Supabase (owner-editable via the admin panel). Static slides are the fallback. -->
+<script>
+(function(){
+  var SB='https://scgcgfcfvbuppkraxjrp.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZ2NnZmNmdmJ1cHBrcmF4anJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNjk2MTQsImV4cCI6MjA5NTY0NTYxNH0.Yjz5X8xnqYmOQOMN-4VGBCw0uF3Sy0D-umC-b5nxp54';
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  fetch(SB+'/rest/v1/lag_photos?select=url,alt&seccion=eq.gallery&activo=eq.true&order=orden',{headers:{apikey:KEY}})
+    .then(function(r){return r.ok?r.json():Promise.reject();})
+    .then(function(rows){
+      if(!rows||!rows.length) return;
+      var el=document.querySelector('.gallery__swiper'); if(!el) return;
+      var wrap=el.querySelector('.swiper-wrapper'); if(!wrap) return;
+      wrap.innerHTML=rows.map(function(p){return '<div class="swiper-slide gallery__slide"><img src="'+esc(p.url)+'" alt="'+esc(p.alt)+'" loading="lazy" decoding="async" /></div>';}).join('');
+      var sw=el.swiper;
+      if(sw){ try{ if(sw.params&&sw.params.loop&&sw.loopDestroy){ sw.loopDestroy(); sw.loopCreate(); } sw.update(); sw.slideTo(0,0);}catch(e){} }
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 
 </html>
